@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<!--    下面所有的配置文件的配置属性都是有先后顺序的-->
+
+<!--    应用外部配置文件-->
+<!--    resource:从类路径下开始引用   url:引用磁盘路径或者网络路径的资源-->
+    <properties resource="dbconfig.properties"></properties>
+    
+<!--    setting这个是mybatis中极为重要的调整设置，它会改变mybatis的运行行为-->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+<!--    类型别名；为常用的类型javabean起别名-->
+    <typeAliases>
+<!--        通过alias取一个具体的别名，如果没有指定alias属性，默认就是类名-->
+<!--        <typeAlias type="org.goldstine.bean.Employee" alias="emp"/>-->
+
+<!--        可以通过一个包的大小及进行批量起别名-->
+<!--        表示为org.goldstine.bean包下的所有的类批量起别名，默认的别名就是对应的类名，大小写不区分-->
+        <package name="org.goldstine.bean"/>
+<!--如果批量起别名的时候需要指定对应的具体的别名，可以通过在对应的类上加上注解@Alias()-->
+    </typeAliases>
+
+
+<!--    类型处理器，自定义类型处理器-->
+
+<!--    对象工厂，mybatis用来封装对应的实例对象的，可以通过继承DefalutObjectFactory实现自定义对应的对象工厂-->
+
+<!--    插件：插件是mybatis提供的一个非常强大的机制，可以通过插件修改mybatis的一些核心功能，插件通过动态代理机制-->
+<!--    可以介入四大对象的任何一个方法的执行-->
+<!--
+        地位相当与springmvc的9大组件
+        Executor,ParameterHandler,ResultSetHandler,StatementHandler
+-->
+
+
+<!--    最后的数据源和事务管理都是通过Spring进行管理，所以最后的mybatis环境不需进行配置-->
+    <environments default="development">
+<!--        直接通过default=""属性切换对应的环境-->
+<!--        每一个environment都对应的一个transactionManager和dataSource-->
+<!--        可以分别配置对应的开发环境和测试环境-->
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+<!--            配置连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${driverclass}"/>
+                <property name="url" value="${jdbcurl}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+<!--    mybatis用来考虑数据库的移植性的-->
+    <databaseIdProvider type="DB_VENDOR">
+<!--        name:表示数据库的厂商表示   value:给这个表示其一个好用的名字-->
+        <property name="MySQL" value="mysql"/>
+<!--        固定配置，为每一个数据库厂商起一个名-->
+        <property name="SQL Server" value="sqlsverver"/>
+        <property name="Oracle" value="orcl"/>
+    </databaseIdProvider>
+
+
+
+<!--    引入我们自己编写的每一个接口的实现文件-->
+    <mappers>
+<!--        resource:表示类路径下找资源-->
+<!--        url:通过配置系统文件和网络文件-->
+<!--        class:配置对应的接口文件的全类名：但是这种方式需要指定对应的配置文件xml,所以需要将EmployeeDao.xml配置文件与EmployeeDao接口类放在同一个包下-->
+        <mapper resource="EmployeeDao.xml"/>
+        <mapper class="org.goldstine.dao.EmployeeDaoAnnotation"/>
+    </mappers>
+
+<!--    批量注册:如果使用批量注册，对应的配置文件也需要放在对应的接口dao相同的包中，-->
+<!--    <mappers>-->
+<!--           <package name="org.goldstine.dao"/>-->
+<!--    </mappers>-->
+
+</configuration>

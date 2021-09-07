@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.goldstine.dao.KeyDao">
+<!--    将钥匙的所有信息查询出来-->
+
+
+    <select id="getKeyById" resultMap="mykey">
+            select k.id,k.keyname,k.lockid,
+                l.id lid,l.lockname from t_key k
+                left join t_lock l on k.lockid=l.id
+                where k.id=#{id}
+    </select>
+    <select id="getKeyByIdSimple" resultMap="mykey02">
+        select * from t_key where id=#{id}
+    </select>
+
+        <resultMap id="mykey02" type="org.goldstine.bean.Key">
+            <id property="id" column="id"/>
+            <result property="keyName" column="keyname"/>
+<!--           告诉mybatis自己调用一个查询锁子-->
+<!--            select=""指定一个查询sql的唯一标识，mybatis自动调用指定的sql将查出的lock封装进来-->
+            <association property="lock" select="org.goldstine.dao.LockDao.getLockByIdSimple"
+            column="lockid" fetchType="eager"></association>
+        </resultMap>
+
+    <!--    自定义封装规则，使用级联属性封装联合查询出的结果-->
+<!--    <resultMap id="mykey" type="org.goldstine.bean.Key">-->
+<!--        <id property="id" column="id"/>-->
+<!--        <result property="keyName" column="keyname"/>-->
+<!--        <result property="lock.id" column="lid"/>-->
+<!--        <result property="lock.lockName" column="lockName"/>-->
+<!--    </resultMap>-->
+
+
+<!--    mybatis推荐的<association property="">-->
+    <resultMap id="mykey" type="org.goldstine.bean.Key">
+        <id property="id" column="id"/>
+        <result property="keyName" column="keyname"/>
+<!--        接下来的属性是一个对象，自定义这个对象的封装规则，使用association:表示联合了一个对象-->
+        <association property="lock" javaType="org.goldstine.bean.Lock">
+<!--            定义lock属性对应的这个Lock对象如何封装-->
+            <id property="id" column="lid"/>
+            <result property="lockName" column="lockName"/>
+        </association>
+    </resultMap>
+
+</mapper>

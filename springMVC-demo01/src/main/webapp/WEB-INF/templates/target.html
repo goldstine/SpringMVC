@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+goldstine
+<h1>测试原生servletAPI获取request域对象</h1>
+<!--获取request与对象中的数据-->
+<!--如果是获取request域中的数据，直接写对应的属性名获取该数据-->
+<!--如果是session域对象中的数据，通过session.获取对应的数据-->
+<!--如果是servletContext域对象数据，通过application.获取数据-->
+<p th:text="${testRequestScope}"></p>
+
+<!--测试Model对象共享域对象数据-->
+<p th:text="${testRequestScope}"></p>
+
+<!--测试访问session对象共享数据-->
+<p th:text="${session.testRequestScope}"></p>
+
+<!--测试通过ServletContext对象共享数据-->
+<p th:text="${application.testRequestScope}"></p>
+</body>
+</html>

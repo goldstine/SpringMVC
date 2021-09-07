@@ -1,0 +1,321 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+  <!--配置上下文参数,这里配置的上下文工程参数属于整个web工程，即属于其他的servlet程序，Filter Listener-->
+  <context-param>
+    <param-name>username</param-name>
+    <param-value>context-goldstine</param-value>
+  </context-param>
+  <context-param>
+    <param-name>password</param-name>
+    <param-value>123456</param-value>
+  </context-param>
+
+
+  <!--servlet标签给tomcat配置Serlvet程序-->
+  <servlet>
+    <!--servlet-name标签给servlet程序起一个别名（一般是类名），可以在tomcat服务器中使用-->
+    <servlet-name>HelloServlet</servlet-name>
+    <!--servlet-class是servlet程序的全类名-->
+    <servlet-class>com.goldstine.servlet.HelloServlet</servlet-class>
+
+    <!--配置servlet初始化参数-->
+    <init-param>
+      <param-name>username</param-name>
+      <param-value>root</param-value>
+    </init-param>
+    <init-param>
+      <param-name>url</param-name>
+      <param-value>jdbc:mysql://localhost:3306/test</param-value>
+    </init-param>
+
+  </servlet>
+
+  <!--servlet-mapping标签给servlet程序配置一个访问地址-->
+  <servlet-mapping>
+    <!--servlet-name标签的作用是告诉服务器，我当前配置的地址是给哪一个Servlet程序使用-->
+    <servlet-name>HelloServlet</servlet-name>
+    <!--url-pattern标签配置访问地址
+      / 斜杠在服务器解析的时候，表示地址为http://ip:port/工程路径，工程路径为对应的tomcat配置context-path,可以进行更改
+      /hello  表示地址为：http://ip:port/工程路径/hello
+      一般url-pattern可以进行自定义
+    -->
+    <url-pattern>/hello</url-pattern>
+  </servlet-mapping>
+
+  <!--HelloServlet2的配置-->
+  <servlet>
+    <servlet-name>HelloServlet2</servlet-name>
+    <servlet-class>com.goldstine.servlet.HelloServlet2</servlet-class>
+
+    <init-param>
+      <param-name>password</param-name>
+      <param-value>123456</param-value>
+    </init-param>
+
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HelloServlet2</servlet-name>
+    <url-pattern>/hello2</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>ContextServlet</servlet-name>
+    <servlet-class>com.goldstine.servlet.ContextServlet</servlet-class>
+    <init-param>
+      <param-name>contextParam</param-name>
+      <param-value>contextParam</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContextServlet</servlet-name>
+    <url-pattern>/contextServlet</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>ContextServlet2</servlet-name>
+    <servlet-class>com.goldstine.servlet.ContextServlet2</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContextServlet2</servlet-name>
+    <url-pattern>/contextServlet2</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>HttpServletRequest</servlet-name>
+    <servlet-class>com.goldstine.servlet.HttpServletRequestDemo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HttpServletRequest</servlet-name>
+    <url-pattern>/goldstine</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>Servlet1</servlet-name>
+    <servlet-class>com.goldstine.servlet.dispatcher.Servlet1</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Servlet1</servlet-name>
+    <url-pattern>/servlet1</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Servlet2</servlet-name>
+    <servlet-class>com.goldstine.servlet.dispatcher.Servlet2</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Servlet2</servlet-name>
+    <url-pattern>/servlet2</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>ForwardC</servlet-name>
+    <servlet-class>com.goldstine.servlet.dispatcher.ForwardC</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ForwardC</servlet-name>
+    <url-pattern>/forwardC</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>ResponseIOServlet</servlet-name>
+    <servlet-class>com.goldstine.servlet.httpservletresponse.ResponseIOServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResponseIOServlet</servlet-name>
+    <url-pattern>/responseIOServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Response1</servlet-name>
+    <servlet-class>com.goldstine.servlet.requestredirect.Response1</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Response1</servlet-name>
+    <url-pattern>/response1</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Response2</servlet-name>
+    <servlet-class>com.goldstine.servlet.requestredirect.Response2</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Response2</servlet-name>
+    <url-pattern>/response2</url-pattern>
+  </servlet-mapping>
+
+  <!--ServletContextListener监听器的配置-->
+  <listener>
+    <listener-class>com.goldstine.servlet.listener.MyServletContextListenerImpl</listener-class>
+  </listener>
+
+
+  <!--对过滤器进行配置,filter标签用于配置一个Filter过滤器-->
+  <filter>
+    <!--给filter起一个别名-->
+    <filter-name>AdminFilter</filter-name>
+    <!--配置filter的全类名，全限名-->
+    <filter-class>com.goldstine.servlet.filter.AdminFilter</filter-class>
+    <init-param>
+      <param-name>username</param-name>
+      <param-value>liulei</param-value>
+    </init-param>
+  </filter>
+  <!--filter-mapping配置filter过滤器的拦截路径-->
+  <filter-mapping>
+    <!--filter-name表示当前的拦截路径给哪一个filter使用-->
+    <filter-name>AdminFilter</filter-name>
+    <!--url-pattern配置拦截路径
+      / 斜杠表示请求地址为：http://ip:port/工程路径/  映射到IDEA的webapp目录下
+
+      /admin/*表示http://ip:port/工程路径/admin目录下的*全部资源
+    -->
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+
+
+  <!--对登录进行servlet配置-->
+  <servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>com.goldstine.servlet.filter.LoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/loginServlet</url-pattern>
+  </servlet-mapping>
+
+
+  <!--FilterChain配置-->
+  <filter>
+    <filter-name>Filter1</filter-name>
+    <filter-class>com.goldstine.servlet.filter.Filter1</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Filter1</filter-name>
+    <url-pattern>/index.jsp</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>Filter2</filter-name>
+    <filter-class>com.goldstine.servlet.filter.Filter2</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Filter2</filter-name>
+    <url-pattern>*.html</url-pattern>
+  </filter-mapping>
+
+  <!--创建cookie-->
+  <servlet>
+    <servlet-name>CookieServlet</servlet-name>
+    <servlet-class>com.goldstine.servlet.cookie.CookieServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CookieServlet</servlet-name>
+    <url-pattern>/cookieServlet</url-pattern>
+  </servlet-mapping>
+
+  <!--修改cookie-->
+  <servlet>
+    <servlet-name>CookieUpdate</servlet-name>
+    <servlet-class>com.goldstine.servlet.cookie.CookieUpdate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CookieUpdate</servlet-name>
+    <url-pattern>/cookieUpdate</url-pattern>
+  </servlet-mapping>
+
+
+  <!--Cookie生命控制-->
+  <!--修改cookie-->
+  <servlet>
+    <servlet-name>CookieDelete</servlet-name>
+    <servlet-class>com.goldstine.servlet.cookie.CookieDelete</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CookieDelete</servlet-name>
+    <url-pattern>/cookieDelete</url-pattern>
+  </servlet-mapping>
+
+
+  <!--服务端设置Cookie对象的有效路径Path,在创建时设置-->
+  <!--修改cookie-->
+  <servlet>
+    <servlet-name>CookiePath</servlet-name>
+    <servlet-class>com.goldstine.servlet.cookie.CookiePath</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CookiePath</servlet-name>
+    <url-pattern>/cookiePath</url-pattern>
+  </servlet-mapping>
+
+<!--免用户名登录-->
+  <servlet>
+    <servlet-name>CookieLoginWithoutUsername</servlet-name>
+    <servlet-class>com.goldstine.servlet.cookie.CookieLoginWithoutUsername</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CookieLoginWithoutUsername</servlet-name>
+    <url-pattern>/cookieLogin</url-pattern>
+  </servlet-mapping>
+
+
+  <!--创建session会话-->
+  <servlet>
+    <servlet-name>SessionCreate</servlet-name>
+    <servlet-class>com.goldstine.servlet.session.SessionCreate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SessionCreate</servlet-name>
+    <url-pattern>/sessionCreate</url-pattern>
+  </servlet-mapping>
+
+  <!--session作为域对象存取数据-->
+  <servlet>
+    <servlet-name>SessionAttr</servlet-name>
+    <servlet-class>com.goldstine.servlet.session.SessionAttr</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SessionAttr</servlet-name>
+    <url-pattern>/sessionAttr</url-pattern>
+  </servlet-mapping>
+
+
+  <!--配置当前web工程的session超时时间，如下单位是分钟-->
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+
+
+  <!--配置文件上传servlet-->
+  <servlet>
+    <servlet-name>FileUpload</servlet-name>
+    <servlet-class>com.goldstine.servlet.fileupload.FileUpload</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileUpload</servlet-name>
+    <url-pattern>/fileUpload</url-pattern>
+  </servlet-mapping>
+
+
+  <!--处理文件的下载-->
+  <servlet>
+    <servlet-name>FileDownload</servlet-name>
+    <servlet-class>com.goldstine.servlet.fileupload.FileDownload</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileDownload</servlet-name>
+    <url-pattern>/fileDownload</url-pattern>
+  </servlet-mapping>
+
+
+</web-app>

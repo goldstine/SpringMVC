@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                        http://www.springframework.org/schema/util
+                        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+<!--&lt;!&ndash;   通过配置使用aop将通知方法加到具体的方法上&ndash;&gt;-->
+<!--&lt;!&ndash;    配置ioc将目标类和切面类进行扫描&ndash;&gt;-->
+<!--    <context:component-scan base-package="org.goldstine"></context:component-scan>-->
+
+<!--&lt;!&ndash;    开启基于注解的AOP功能&ndash;&gt;-->
+<!--    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>-->
+
+
+<!--    基于配置的AOP-->
+<!--    将目标类和切面类加入IOC-->
+    <bean id="myMathCalculator" class="org.goldstine.impl.MyMathCalculator"></bean>
+    <bean id="bValidateAspect" class="org.goldstine.utils.BValidateAspect"></bean>
+    <bean id="logUtils" class="org.goldstine.utils.LogUtils"></bean>
+<!--通过aop名称空间指定切面-->
+    <aop:config>
+
+<!--        声明一个全局可重用aop-->
+        <aop:pointcut id="globalPoint" expression="execution(* org.goldstine.impl.*.*(..))"/>
+
+<!--        指定切面：@Aspect-->
+        <aop:aspect ref="logUtils" order="3">
+
+            <!--            配置环绕通知-->
+            <aop:around method="myAround" pointcut-ref="mypoint"/>
+
+<!--            配置复用引用-->
+            <aop:pointcut id="mypoint" expression="execution(* org.goldstine.impl.*.*(..))"/>
+<!--            配置哪个方法是前置通知：method指定方法名-->
+            <aop:before method="logStart" pointcut="execution(* org.goldstine.impl.*.*(..))"/>
+<!--            配置返回通知方法-->
+            <aop:after-returning method="logReturn" pointcut-ref="mypoint" returning="result"/>
+<!--            配置异常通知-->
+            <aop:after-throwing method="logException" pointcut-ref="mypoint" throwing="exception"/>
+<!--            配置后置通知-->
+            <aop:after method="logEnd" pointcut-ref="mypoint" />
+<!--            后置通知和返回通知哪个在前面那个就先执行-->
+
+        </aop:aspect>
+        <aop:aspect ref="bValidateAspect" order="-1">
+            <aop:before method="logStart" pointcut-ref="globalPoint"/>
+            <aop:after-returning method="logReturn" pointcut-ref="globalPoint" returning="result"/>
+            <aop:after-throwing method="logException" pointcut-ref="globalPoint" throwing="exception"/>
+            <aop:after method="logEnd" pointcut-ref="globalPoint"/>
+        </aop:aspect>
+    </aop:config>
+
+<!--    注解，可以快速方便-->
+<!--    配置，功能完善，注解能做到的，配置能做到，注解不能做到的，我配置也能做到-->
+<!--注解和配置就是东厂和西厂之间的关系-->
+<!--重要的用配置，不重要的用注解-->
+</beans>

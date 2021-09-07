@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                        http://www.springframework.org/schema/util
+                        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+<!--    通过注解分别创建Dao,Service,Controller
+        通过给bean上添加某些注解，可以快速地将bean加入到ioc容器中
+-->
+<!--    注解+扫描的方式添加组件进入ioc容器中-->
+<!--    <context:component-scan base-package="org.goldstine">-->
+<!--        &lt;!&ndash;    指定扫描包是要包含的类&ndash;&gt;-->
+<!--&lt;!&ndash;        type="annotation":指定排除规则，按照注解进行排除，标注了指定注解的组件不要-->
+<!--            对应的排除规则有：-->
+<!--                type="assignable":指定需要排除的类<context:exclude-filter type="assignable" expression="org.goldstine.servlet.BookServlet"/>-->
+<!--                type="aspectj":后来使用的aspectj表达式-->
+<!--                type="custom"：自定义一个TypeFilter接口的实现类，自定义决定哪些使用-->
+<!--                type="regex"：正则表达式-->
+
+<!--&ndash;&gt;-->
+<!--&lt;!&ndash;        expression：标注注解的全类名：注意是注解的全类名&ndash;&gt;-->
+<!--&lt;!&ndash;        <context:exclude-filter type="assignable" expression="org.goldstine.servlet.BookServlet"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;    指定扫描包时不包含的类&ndash;&gt;-->
+<!--        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
+<!--    </context:component-scan>-->
+
+    <context:component-scan base-package="org.goldstine" use-default-filters="false">
+<!--        默认的情况下，是将所有的org.goldstine中的组件，需要在第一次的基础上进行，所以关闭默认的规则将所有的组件进行扫描-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+<!--    对于其他的jar中的组件，还是需要通过配置文件配置bean的方式导入容器-->
+<!--    <bean class="org.apache.commons.logging.impl.Jdk14Logger"></bean>-->
+<!--    所以使用注解+bean配置相结合的方式-->
+
+<!--    DI：使用@Autowire注解实现数据类型自动装配-->
+<!--    <context:component-scan base-package=""-->
+
+</beans>

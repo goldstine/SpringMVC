@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+<!--所有标签内部的k=v都可以写在对应的标签对中间-->
+    <bean id="car01" class="org.goldstine.bean.Car">
+        <property name="carName" value="宝马"></property>
+        <property name="color" value="绿色"></property>
+        <property name="price" value="30000"></property>
+    </bean>
+<!--    为各种属性进行赋值-->
+    <bean id="person01" class="org.goldstine.bean.Person">
+        <property name="lastName">
+<!--            进行复杂赋值-->
+            <null/>
+        </property>
+<!--        ref代表引用外面的一个值-->
+<!--        <property name="car" ref="car01"></property>-->
+<!--        也可以通过内部bean创建对象-->
+        <property name="car">
+            <bean class="org.goldstine.bean.Car">
+                <property name="carName" value="奔驰"></property>
+                <property name="color" value="蓝色"></property>
+                <property name="price" value="1212"></property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <bean id="book01" class="org.goldstine.bean.Book">
+        <property name="bookName" value="西游记"></property>
+        <property name="author" value="吴承恩"></property>
+    </bean>
+<!--    为List类型赋值-->
+    <bean id="person02" class="org.goldstine.bean.Person">
+<!--        如何为list类型赋值-->
+        <property name="books">
+            <list>
+<!--                list标签体中添加每一个元素-->
+                <bean id="book000x" class="org.goldstine.bean.Book" p:bookName="西游记" p:author="吴承恩"></bean>
+<!--                引用外部的一个对象-->
+                <ref bean="book01"/>
+            </list>
+        </property>
+
+<!--        为map数据类型进行赋值-->
+        <property name="maps">  <!--只是相当于new了一个hashMap   maps=new HashMap<>();-->
+            <map>
+<!--                一个entry代表一个键值对-->
+                <entry key="key01" value="张三"></entry>
+                <entry key="key02" value="18"></entry>
+                <entry key="key03" value-ref="book01"></entry>
+<!--                如果需要在entry内部创建一个对应的kv-->
+                <entry key="key04" >
+                    <bean class="org.goldstine.bean.Car">
+                        <property name="carName" value="宝马"></property>
+                    </bean>
+                </entry>
+<!--                <entry key="key05" >-->
+<!--                    <map>-->
+<!--               -->
+<!--                    </map>-->
+<!--                </entry>-->
+            </map>
+        </property>
+
+<!--        为对应的properties对象赋值，这个对象就相当于一个properties配置文件，还是类似于一个map集合对象进行操作-->
+<!--        只不过所有的k=v都是对应的string-->
+        <property name="properties" >
+            <props>
+<!--                由于k=v都是string数据类型，所以可以直接写在标签体中-->
+                <prop key="username">root</prop>
+                <prop key="password">12346</prop>
+            </props>
+        </property>
+
+    </bean>
+
+<!--    util名称空间，创建集合类型的bean====可以方便创建bean的时候直接引用其他的bean内部的属性-->
+<!--    通过创建一个util名称空间找到其它bean内部的属性xmlns:util=“http://www.springframework.org/schema/util”-->
+    <bean id="person03" class="org.goldstine.bean.Person">
+<!--        通过util名称空间获得对应的person02的maps属性-->
+        <property name="maps" ref="myMap"></property>
+    </bean>
+
+<!--    通过指定id获得对应的util名称空间-->
+    <util:map id="myMap">
+<!--        相当于创建一个new LinkedHashMap<>()-->
+<!--        添加元素，每一个k=v都对应的一个entry-->
+        <entry key="key01" value="张三"></entry>
+        <entry key="key02" value="18"></entry>
+        <entry key="key03" value-ref="book01"></entry>
+        <!--                如果需要在entry内部创建一个对应的kv-->
+        <entry key="key04" >
+            <bean class="org.goldstine.bean.Car">
+                <property name="carName" value="宝马"></property>
+            </bean>
+        </entry>
+
+    </util:map>
+<!--通过util名称空间创建List-->
+<!--    {[],12,{},book对象}-->
+    <util:list id="myList">
+        <list></list>
+        <value>12</value>
+        <ref bean="myMap"/>
+<!--        引用外部的一个map集合对象-->
+        <bean id="book001" class="org.goldstine.bean.Book">
+            <property name="bookName" value="红楼梦"></property>
+            <property name="author" value="曹雪芹"></property>
+        </bean>
+
+    </util:list>
+
+
+    <bean id="car001" class="org.goldstine.bean.Car">
+        <property name="carName" value="法拉第"></property>
+        <property name="price" value="232323"></property>
+        <property name="color" value="red"></property>
+    </bean>
+<!--    级联属性：属性的属性赋值-->
+    <bean id="person04" class="org.goldstine.bean.Person">
+        <property name="car" ref="car001"></property>
+        <property name="car.price" value="10000"></property>
+    </bean>
+
+
+
+<!--    通过继承实现bean配置信息的重用,只是将配置信息进行继承-->
+    <bean id="person05" class="org.goldstine.bean.Person">
+        <property name="lastName" value="张三"></property>
+        <property name="age" value="18"></property>
+        <property name="sex" value="男"></property>
+        <property name="email" value="zhangsan@163.com"></property>
+    </bean>
+<!--    parent：指定当前bean的配置信息继承于哪一个-->
+    <bean id="person06" class="org.goldstine.bean.Person" parent="person05">
+        <property name="lastName" value="李四"></property>
+    </bean>
+
+<!--    如果对应的bean不需要通过容器进行获取，可以设置bean的配置信息为abstract=true-->
+    <bean id="person07" class="org.goldstine.bean.Person" abstract="true">
+        <property name="lastName" value="wangwu"></property>
+        <property name="age" value="18"></property>
+        <property name="sex" value="男"></property>
+        <property name="email" value="zhangsan@163.com"></property>
+    </bean>
+
+</beans>

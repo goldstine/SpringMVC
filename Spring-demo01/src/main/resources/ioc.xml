@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--注册一个Person对象，Spring会自动创建这个Person对象-->
+    <!--
+        一个Bean标签可以注册一个组件（对象和类）
+        class:写要注册的组件的全类名
+        id:这个对象的唯一标识
+    -->
+    <bean id="person01" class="org.goldstine.bean.Person">
+        <property name="lastName" value="张三"></property>
+        <property name="age" value="23"></property>
+        <property name="email" value="zhangsan@163.com"></property>
+        <property name="sex" value="男"></property>
+    </bean>
+
+    <bean id="person02" class="org.goldstine.bean.Person">
+        <property name="lastName" value="小花"></property>
+    </bean>
+
+    <bean id="person03" class="org.goldstine.bean.Person">
+<!--        调用setter方法进行赋值的-->
+<!--        <property name="lastName" value="大黄"></property>-->
+<!--        调用有参构造器初始化对象进行赋值,写4个constructor-arg标签对应4个构造器参数-->
+        <constructor-arg name="lastName" value="小明"></constructor-arg>
+        <constructor-arg name="age" value="24"></constructor-arg>
+        <constructor-arg name="sex" value="男"></constructor-arg>
+        <constructor-arg name="email" value="zs@163.com"></constructor-arg>
+    </bean>
+
+    <!--通过参数顺序进行赋值的构造器初始化bean对象和属性值-->
+    <bean id="person04" class="org.goldstine.bean.Person">
+        <constructor-arg value="小汪"></constructor-arg>
+        <constructor-arg value="32"></constructor-arg>
+        <constructor-arg value="nan"></constructor-arg>
+        <constructor-arg value="lilei@163.com"></constructor-arg>
+    </bean>
+<!--可以通过索引的方式为构造器进行参数赋值-->
+    <bean id="person05" class="org.goldstine.bean.Person">
+        <constructor-arg value="西奥"></constructor-arg>
+        <constructor-arg value="54"></constructor-arg>
+        <constructor-arg value="goldstine@163.com" index="3"></constructor-arg>
+        <constructor-arg value="nan" index="2"></constructor-arg>
+    </bean>
+
+<!--    通过三个参数的构造器进行赋值-->
+    <bean id="person06" class="org.goldstine.bean.Person">
+        <constructor-arg value="孙悟空"></constructor-arg>
+<!--        重载的情况下，可以通过type指定参数的类型-->
+        <constructor-arg value="54" index="1" type="java.lang.Integer"></constructor-arg>
+        <constructor-arg value="男"></constructor-arg>
+    </bean>
+
+<!--    通过p名称空间为bean赋值-->
+<!--    名称空间：在xml中名称空间是用来防止标签重复的-->
+    <bean id="person07" class="org.goldstine.bean.Person"
+        p:age="23" p:email="zs@163.com" p:lastName="haha" p:sex="男">
+
+    </bean>
+
+</beans>

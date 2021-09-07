@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+<!--  创建带有生命周期的bean-->
+<!--    为bean自定义一些生命周期方法，在Spring创建或者销毁的时候就会调用指定的方法-->
+<!--    自定义初始化和销毁方法：方法必须没有参数，可以抛出任意异常-->
+<!--    通过destory-method的方式指定销毁方法，通过init-method的方式指定初始化方法-->
+<!--    <bean id="book01" class="org.goldstine.bean.Book"-->
+<!--    destroy-method="myDestory" init-method="myInit" scope="singleton">-->
+<!--        <property name="bookName" value="西游记"></property>-->
+<!--        <property name="author" value="吴承恩"></property>-->
+<!--    </bean>-->
+
+<!--无论bean是否有初始化方法，后置处理器都会默认其有默认的初始化方法，还是会调用后置处理器的两个方法-->
+<!--    <bean id="car01" class="org.goldstine.bean.Car"></bean>-->
+
+
+<!--    测试bean的后置处理器：BeanPostProcessor-->
+<!--    Spring有一个接口，后置处理器，可以在bean的初始化前后调用方法-->
+<!--注册一个后置处理器-->
+    <bean id="beanPostProcessor" class="org.goldstine.factory.MyBeanPostProcessorImpl"></bean>
+
+
+
+    <bean id="car01" class="org.goldstine.bean.Car">
+        <property name="carName" value="宝马"></property>
+        <property name="color" value="白色"></property>
+    </bean>
+
+<!--    <bean id="car" class="org.goldstine.bean.Car">-->
+<!--        <property name="carName" value="奔驰"></property>-->
+<!--        <property name="color" value="黑色"></property>-->
+<!--    </bean>-->
+<!--    自动赋值  自动装配-->
+<!--    存在属性autowire作为自动复制的配置-->
+<!--
+        autowire="default/no":不自动装配，不自动为car属性赋值
+        autowire="byName":通过Person类中的属性名自动去ioc容器中找到对应的同名id bean实体作为值进行赋值，如果找不到就装配null
+        autowire="byType"：以属性的类型作为查找依据去容器中找这个组件;如果容器中有多个这个类型的组件，报错NoUniqueBeanDefinitionException
+                    如果通过类型没有找到，会装配为null
+        autowire="constructor":
+            (1)先按照有参构造器的参数的类型进行装配（成功就赋值）；没有就直接为组件装配null即可
+            （2）如果按照类型找到了多个，参数的名作为id继续匹配，找到就装配，找不到就null
+
+-->
+    <bean id="person" class="org.goldstine.bean.Person" autowire="byType">
+<!--        <property name="car" ref="car02"></property>-->
+    </bean>
+
+<!--    如果有对应的属性类型为List<Book>,容器可以把所有的bean进行自动装配赋值-->
+    <bean id="book01" class="org.goldstine.bean.Book">
+        <property name="bookName" value="book01"></property>
+    </bean>
+    <bean id="book02" class="org.goldstine.bean.Book">
+        <property name="bookName" value="book02"></property>
+    </bean>
+    <bean id="book03" class="org.goldstine.bean.Book">
+        <property name="bookName" value="book03"></property>
+    </bean>
+
+
+<!--    测试SpEL:Spring Expression Language-->
+    <bean id="person01" class="org.goldstine.bean.Person">
+<!--        字面量，表达式#{}-->
+        <property name="salary" value="#{12345.67*12}"></property>
+<!--        通过spel表达式取出对应的对象的属性值-->
+        <property name="lastName" value="#{book01.bookName}"></property>
+<!--        通过value属性引用外部的bean-->
+        <property name="car" value="#{car01}"></property>
+<!--        调用静态方法-->
+        <property name="email" value="#{T(java.util.UUID).randomUUID().toString().substring(0,5)}"></property>
+<!--        调用非静态方法-->
+        <property name="sex" value="#{book01.getBookName()}"></property>
+    </bean>
+
+
+</beans>

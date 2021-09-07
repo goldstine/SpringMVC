@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:名称空间，写接口的全类名，相当于告诉mybatis这个配置文件是实现那个接口的-->
+<mapper namespace="org.goldstine.dao.EmployeeDao">
+<!--    参数类型不需要写，增删改不需要写返回值类型，增删改是返回影响多少行-->
+<!--    mybatis自动判断。如果是数字（int,long)-->
+<!--    如果是boolean(影响0行自动封装false,否则true)-->
+<!--  #{属性名}：从传入的参数对象中取出对应的属性的值  -->
+
+    <insert id="insertEmployee">
+        insert into t_employee(empName,gender,email,login_acc) values(#{empName},#{gender},#{email},#{loginAcc})
+    </insert>
+    <update id="updateEmployee">
+        update t_employee set empName=#{empName},gender=#{gender},email=#{email} where id=#{id}
+    </update>
+    <delete id="deleteEmployee">
+        delete from t_employee where id=#{id}
+    </delete>
+    <!--    select:用来定义一个查询操作-->
+<!--    id:写为方法名，相当于是对某一个方法的实现-->
+<!--    resultType:指定方法运行后的返回值类型，查询操作必须指定的-->
+<!--    <select id="getEmployeeById" resultType="org.goldstine.bean.Employee">-->
+<!--    通过别名进行设置-->
+    <select id="getEmployeeById" resultType="gold">
+        select * from t_employee where id = #{id}
+    </select>
+<!--通过databaseId对特定的数据库厂商名进行匹配，如果能够精确匹配，则精确匹配，如果不能则匹配执行对应的没有指定的sql-->
+<!--    <select id="getEmployeeById" resultType="gold" databaseId="mysql">-->
+<!--        select * from t_employee where id = #{id}-->
+<!--    </select>-->
+</mapper>
+
+
+
+<!--我们写的dao接口的实现文件mybatis默认是不知道的，需要在全局配置文件中注册-->

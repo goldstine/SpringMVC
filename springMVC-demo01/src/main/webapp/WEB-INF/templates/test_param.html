@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>测试请求参数</title>
+</head>
+<body>
+<h1>测试请求参数</h1>
+<a th:href="@{/testServletApi(username='admin',password='123456')}">测试使用ServletApi获取请求参数</a>
+<a th:href="@{/testControllerParam(username='admin',password='123456')}">测试通过控制器方法进行参数获取</a>
+<!--表单元素传递多个请求参数-->
+<form th:action="@{/testParamsABC}" method="get">
+    用户名：<input type="text" name="user_name"/><br/>
+    密码：<input type="password" name="password"><br/>
+    爱好：<input type="checkbox" name="hobby" value="a">
+    <input type="checkbox" name="hobby" value="b">
+    <input type="checkbox" name="hobby" value="c">
+    <input type="submit" value="测试通过控制器方法的形参获取请求参数"/>
+</form>
+
+
+<!--可以通过将请求的多个参数与实体类的形参直接接收，将多个请求映射为一个Bean实体类对象-->
+<form th:action="@{/testBean}" method="post">
+    用户名:<input type="text" name="username"/>
+    密码：<input type="password" name="password"/>
+    性别：<input type="radio" name="sex" value="男">男<input type="radio" name="sex" value="女">女
+    年龄：<input type="text" name="age"><br/>
+    邮箱：<input type="text" name="email"><br/>
+    <input type="submit" value="测试请求参数与实体类之间的映射">
+</form>
+
+</body>
+</html>

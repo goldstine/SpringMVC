@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.goldstine.dao.EmployeeDao">
+
+<!--    可配置的属性-->
+<!--
+cache:和缓存相关
+cache-ref:和缓存有关
+delete,update,insert,select:增删改查
+parameterMap:参数map，废弃的，原本是用来做复杂参数映射
+resultMap:结果映射，自定义结果集的封装规则
+sql:抽取可重用sql
+-->
+
+
+
+    <select id="getEmployeeById" resultType="org.goldstine.bean.Employee">
+        select * from t_employee where id = #{haha}
+<!--        如果传的参数只有一个，取值表达式的值可以使任意参数名-->
+<!--        select * from t_employee where id = #{id}-->
+    </select>
+
+<!--    获取员工信息通过id和名字-->
+    <select id="getEmployeeByIdAndempName" resultType="org.goldstine.bean.Employee">
+
+<!--
+        现象：
+            对于单个参数的方法：
+                基本数据类型：sql取值#{随便写}
+                传入pojo
+            对于多个参数：
+                public Employee getEmployeeByIdAndEmpName(Integer id,String empName);
+                取值：通过#{参数名}是无效了
+                可以通过param1，param2。。。的方式取值
+                原因：只要传入了多个参数，mybatis会自动将这些参数封装在一个map
+                    封装的时候使用的key就是参数的索引和参数的第几个表示
+                    Map<String,Object> map=new HashMap<>();
+                    map.put("1",传入的参数值);
+
+
+                通过@Param的方式指定key,命名参数，推荐使用
+
+
+-->
+
+<!--        BindingException: Parameter 'id' not found.传递多个参数的时候，会出现不能找到对应的参数id-->
+<!--        通过索引的方式获得参数-->
+<!--        select * from t_employee where id=#{0} and empname=#{1}，无效-->
+<!--        select * from t_employee where id=#{param1} and empname=#{param2}-->
+        select * from t_employee where id=#{id} and empname=#{empName}
+    </select>
+
+<!--    传递map数据类型的参数-->
+<!--    去参数的方式也是通过#{key}-->
+    <select id="getEmployeeByIdAndEmpNamewithMap" resultType="org.goldstine.bean.Employee">
+        select * from t_employee where id=${id} and empname=#{empName}
+    </select>
+<!--
+    实际上，在mybatis中，有两种取值方式
+        #{属性名}:是参数预编译的方式，参数的位置都是通过？代替的，参数后来都是通过预编译设置进去的；更安全，不会有sql注入的问题
+        ${属性名}:不是参数预编译的方式，而是直接和sql语句进行拼串的方式，不安全
+
+    一般都是使用#{}：安全；在不支持参数与编译的位置要进行取值就使用${}
+
+-->
+
+<!--    查询返回的是集合，写的是集合里面的元素的类型   resultType=-->
+    <select id="getAllEmps" resultType="org.goldstine.bean.Employee">
+        select * from t_employee
+    </select>
+
+<!--    动态sql,通过判断节点if-->
+    <select id="getEmpByPage" resultType="org.goldstine.bean.Employee">
+        select * from t_employee
+<!--        if节点中，test表示判断条件，如果判断结果为true,则if节点中的sql会生效，否则不会生效-->
+        <if test="start!=null and count!=null">
+            limit #{start},#{count}
+        </if>
+    </select>
+<!--    通过where拼接多个查寻条件-->
+    <select id="getEmpByUsernameAndId" resultType="org.goldstine.bean.Employee">
+        select * from t_employee
+        <where>
+            <if test="id!=null">
+                and id>#{id}
+            </if>
+            <if test="empname!=null">
+                and empname like concat('%',#{empname},'%')
+            </if>
+        </where>
+    </select>
+<!--    通过ids[]数组进行条件查询-->
+    <select id="getUserByIds" resultType="org.goldstine.bean.Employee">
+<!--        select * from t_employee where id in-->
+        select <include refid="Base_Column"/> from t_employee where id in
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </select>
+<!--    查询返回一个map数据结果-->
+    <select id="getEmpByIdRetureMap" resultType="java.util.Map">
+        select * from t_employee where id=#{id}
+    </select>
+
+<!--    将多个查询结果进行封装成map集合对象，resultType应该写为对应的元素的类型全限名，dao中的方法应该指定的对应的key,
+将查询的元素的id作为key还是将查询的元素的name作为key-->
+    <select id="getAllEmpsRetureMap" resultType="org.goldstine.bean.Employee">
+        select * from t_employee
+    </select>
+
+
+<!--    可以指定resultMap,自己定义每一列数据和javabean的映射规则-->
+
+
+
+
+    <!--    与ids[]相对应的批量插入操作-->
+    <insert id="batchInsertEmp">
+        insert into t_employee (empname,gender,email,login_acc) values
+        <foreach collection="emps" separator="," item="emp">
+            (#{emp.empName},#{emp.gender},#{emp.email},#{emp.loginAcc})
+        </foreach>
+    </insert>
+
+    <update id="updateEmp" parameterType="org.goldstine.bean.Employee">
+        update t_employee
+        <set>
+            <if test="empname!=null">
+                empname=#{emp.empName},
+            </if>
+            <if test="gender!=null">
+                gender=#{emp.gender},
+            </if>
+            <if test="email!=null">
+                email=#{emp.email},
+            </if>
+            <if test="login_acc!=null">
+                loginAcc=#{emp.loginAcc},
+            </if>
+        </set>
+        where id=#{emp.id};
+    </update>
+
+<!--    可以先定义一个mapper  sql片段-->
+    <sql id="Base_Column">
+        id,empname,gender,email,login_acc
+    </sql>
+<!--    然后再其他的sql中，就可以引用这个片段-->
+
+
+    <!--  多个参数，自动封装成map  -->
+<!--    method01(@Param("id")Integer id,String empName,Employee employee);
+        Integer id===>#{id}
+    String empName==->#{param2}
+    Employee employee(取出这个里面的email)=====#{param3.email}
+
+-->
+
+
+    <!--    让mybatis自动将自增id赋值给传入的employee对象的id属性
+    useGeneratedKeys="true"
+    -->
+
+    <insert id="insertEmployee" useGeneratedKeys="true" keyProperty="id">
+<!--        查询主键
+        order="BEFORE"
+        在核心sql语句之前先运行一个查询sql查到id，将查到的id赋值给javabean的哪个属性
+-->
+<!--        <selectKey order="BEFORE" keyProperty="id">-->
+<!--            select max(id) from t_employee-->
+<!--        </selectKey>-->
+        insert into t_employee(empName,gender,email,login_acc) values(#{empName},#{gender},#{email},#{loginAcc})
+    </insert>
+
+
+    <insert id="insertEmployee1" useGeneratedKeys="true" keyProperty="id">
+        <!--        查询主键
+                order="BEFORE"
+                在核心sql语句之前先运行一个查询sql查到id，将查到的id赋值给javabean的哪个属性
+        -->
+<!--                <selectKey order="BEFORE" keyProperty="id" resultType="integer">-->
+<!--                    select max(id)+2 from t_employee-->
+<!--                </selectKey>-->
+<!--        先通过查询获得对应的id最大值+2作为下一个插入数据的id键值-->
+
+        <selectKey order="AFTER" keyProperty="id" resultType="integer">
+            select max(id)+2 from t_employee
+        </selectKey>
+        insert into t_employee(id,empName,gender,email,login_acc) values(#{id},#{empName},#{gender},#{email},#{loginAcc})
+    </insert>
+
+
+    <update id="updateEmployee">
+        update t_employee set empName=#{empName},gender=#{gender},email=#{email} where id=#{id}
+    </update>
+
+
+    <delete id="deleteEmployee">
+        delete from t_employee where id=#{id}
+    </delete>
+
+</mapper>

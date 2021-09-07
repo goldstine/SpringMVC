@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a th:href="@{/user}">查询所用用户信息</a>
+<br/>
+<a th:href="@{/user/1}">根据用户id查询用户信息</a>
+<br/>
+
+<!--添加一个用户，通过post请求，超链接是get,通过表单post方式提交-->
+<form th:action="@{/user}" method="post">
+    用户名：<input type="text" name="username"/><br/>
+    密码：<input type="password" name="password"><br/>
+    <input type="submit"/>
+</form>
+
+<!--浏览器默认转为对应的get请求，会按照执行查询所有用户信息-->
+<form th:action="@{/user}" method="post">
+    <input type="hidden" name="_method" value="PUT">
+    用户名：<input type="text" name="username"/><br/>
+    密码：<input type="password" name="password"><br/>
+    <input type="submit" value="修改"/>
+</form>
+
+
+<!--浏览器默认转为对应的get请求，会按照执行查询所有用户信息-->
+<!--<form th:action="@{/user}" method="post">-->
+<!--    <input type="hidden" name="_method" value="DELETE">-->
+<!--    用户名：<input type="text" name="username"/><br/>-->
+<!--    密码：<input type="password" name="password"><br/>-->
+<!--    <input type="submit" value="删除"/>-->
+<!--</form>-->
+</body>
+</html>

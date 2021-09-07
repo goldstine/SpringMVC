@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+asasa
+<a th:href="@{/target}">访问目标页面target.html</a>
+<a th:href="@{/test}">测试RequestMapping注解的method属性的Get请求</a>/br>
+<form th:action="@{/test}" method="post">
+    <input type="submit"/><!--submit有默认的value="提交"-->
+</form>
+
+<!--通过form表单测试put请求-->
+<form th:action="@{/testPutMapping}" method="put">
+    <input type="submit"/>
+</form>
+
+
+<!--测试对应的params-->
+<a th:href="@{/testParams(username='admin')}">测试RequestMapping注解的param属性设置</a>
+<!--测试ant风格请求路径-->
+<a th:href="@{/a1a/testAnt}">测试ant风格的请求路径</a>
+
+<!--rest风格的接口通过控制器进行参数的接受-->
+<a th:href="@{/testRest/1}">测试rest风格的请求路径</a>
+
+<!--测试域对象数据-->
+<a th:href="@{/testRequestByServletApi}">测试原生ServletAPI域对象request数据的获取</a>
+
+<!--测试ModelAndView域对象共享数据-->
+<a th:href="@{/testModelAndView}">测试ModelAndView域对象request数据的获取</a>
+
+<!--测试Model对象共享域对象数据-->
+<br/>
+<a th:href="@{/testModel}">测试Model共享域对象数据</a>
+
+<!--通过map的方式共享域对象数据-->
+<br/>
+<a th:href="@{/testMap}">测试Map共享域对象数据</a>
+
+<!--测试通过ModelMap的方式共享域对象数据-->
+<br/>
+<a th:href="@{/testModelMap}">测试ModelMap共享域对象数据</a>
+
+<!--测试通过session共享域对象数据-->
+<br/>
+<a th:href="@{/testSession}">测试Session共享域对象数据</a>
+
+<!--测试通过ServletContext对象共享数据-->
+<br/>
+<a th:href="@{/testApplication}">测试ServletContext对象共享域对象数据</a>
+
+
+<!--测试使用ajax-->
+<div id="app">
+    <a @click="testAxios" th:href="@{/testAjax}">SpringMvc使用ajax</a>
+</div>
+
+<script type="text/javascript" th:src="@{/static/js/vue.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/axios.min.js}"></script>
+<script type="text/javascript">
+    new Vue({
+        el:"#app",
+        methods:{
+            testAxios:function (event) {
+                axios({
+                    method:"post",
+                    url:event.target.href,
+                    params:{
+                        username:"admin",
+                        password:"123456"
+                    }
+                }).then(function (response) {
+                    alert(response.data);
+                });
+                event.preventDefault();
+            }
+        }
+    });
+</script>
+
+
+<!--测试异常处理-->
+<a th:href="@{/testException}">测试异常处理SimpleMappingExcepiton</a>
+
+</body>
+</html>

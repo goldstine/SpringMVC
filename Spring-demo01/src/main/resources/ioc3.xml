@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+<!--默认情况下是按照配置的先后顺序进行创建bean实例对象的-->
+<!--    通过bean之间的依赖改变bean的创建顺序-->
+    <bean id="book01" class="org.goldstine.bean.Book" depends-on="person01,car01"></bean>
+    <bean id="person01" class="org.goldstine.bean.Person"></bean>
+    <bean id="car01" class="org.goldstine.bean.Car"></bean>
+
+
+<!--    bean的作用域：指定bean是否是单实例的，默认是单实例的
+        prototype:多实例的
+            多实例bean，在容器启动之前不会创建
+            每次获取的时候创建这个bean
+            每次获取都会创建一个新的对象
+        singleton:单实例的
+            在容器启动之前就已经将bean实例创建完成
+            任何获取bean对象都是获取之前创建好的bean对象
+        request:为web环境中，同一次请求创建一个bean实例（没用）
+        session:在web环境下，同一次会话创建一个bean实例（没用）
+
+
+-->
+    <bean id="car02" class="org.goldstine.bean.Car" scope="prototype"></bean>
+
+
+<!--    通过静态工厂创建bean实例-->
+<!--    不需要创建工厂本身-->
+<!--    通过class:指定静态工厂的全类名，通过factory-method方式指定创建实例的静态方法-->
+<!--    通过constructor-arg指定创建对象的静态方法的参数-->
+    <bean id="airPlane01" class="org.goldstine.factory.StaticFactory" factory-method="getAirPlane">
+        <constructor-arg value="李四"></constructor-arg>
+    </bean>
+
+
+<!--    通过实例工厂方法创建实例对象-->
+<!--    先配置创建实例工厂-->
+    <bean id="instanceFactory" class="org.goldstine.factory.InstanceFactory"></bean>
+<!--通过factory-bean指定使用的实例工厂id,通过factory-method:指定创建实例的实例方法-->
+    <bean id="airPlane02" class="org.goldstine.bean.AirPlane"
+    factory-bean="instanceFactory" factory-method="getAirPlane">
+        <constructor-arg value="刘磊"></constructor-arg>
+    </bean>
+
+
+<!--    FactoryBean是Spring规定的一个接口,只要是这个接口的实现类，Spring都认为是一个工厂-->
+    <bean id="myFactoryBean01" class="org.goldstine.factory.MyFactoryBeanImpl">
+
+    </bean>
+
+</beans>

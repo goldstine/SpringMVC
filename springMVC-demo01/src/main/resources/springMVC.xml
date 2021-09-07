@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                        http://www.springframework.org/schema/util
+                        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+<!--springmvc的配置文件相比较Spring配置文件多了一个context-->
+    <!--    配置将标记之后的组件进行扫描-->
+    <!--    扫描组件-->
+    <context:component-scan base-package="org.goldstine.mvc.controller" />
+    <context:component-scan base-package="org.goldstine.mvc.fieldobjectcontroller" />
+    <context:component-scan base-package="org.goldstine.mvc.viewcontroller" />
+    <context:component-scan base-package="org.goldstine.mvc.jspcontroller" />
+    <context:component-scan base-package="org.goldstine.mvc.restfulcontroller" />
+    <context:component-scan base-package="org.goldstine.mvc.httpmessageconverter" />
+    <context:component-scan base-package="org.goldstine.mvc.intercepterHandler" />
+    <!--    视图解析器的配置，负责页面的跳转-->
+
+
+    <!-- 配置Thymeleaf视图解析器 -->
+    <bean id="viewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="order" value="1"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="templateEngine">
+            <bean class="org.thymeleaf.spring5.SpringTemplateEngine">
+                <property name="templateResolver">
+                    <bean class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+
+                        <!-- 视图前缀 -->
+                        <property name="prefix" value="/WEB-INF/templates/"/>
+
+                        <!-- 视图后缀 -->
+                        <property name="suffix" value=".html"/>
+                        <property name="templateMode" value="HTML5"/>
+                        <property name="characterEncoding" value="UTF-8" />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+
+<!--    创建jsp视图解析器，使用InternalResourceViewResolver-->
+<!--    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+<!--        <property name="prefix" value="/WEB-INF/templates/"></property>-->
+<!--        <property name="suffix" value=".jsp"></property>-->
+<!--    </bean>-->
+
+
+<!--    配置文件上传解析器，将上传的文件封装为mutilpartFile,id="multipartResolver"必须设置对应的id，否者获取不到对应的bean
+        出现空指针异常
+-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
+
+<!--    拦截器配置-->
+    <mvc:interceptors>
+
+<!--        对两个拦截器进行配置-->
+        <ref bean="firstIntercepter"></ref>
+        <ref bean="secondIntercepter"></ref>
+
+<!--        直接将对应的类作为bean配置，表示该类对象作为拦截器-->
+<!--        <bean class="org.goldstine.mvc.intercepterHandler.FirstIntercepter"></bean>-->
+
+<!--        第二种配置方式，在对应的类上指定为普通组件，然后通过引用该组件，作为一个拦截器组件-->
+<!--        这种方式的没有配置拦截规则的拦截器都是对所有的请求进行拦截-->
+<!--        <ref bean="firstIntercepter"></ref>-->
+        
+<!--        第三种配置方式【可以设置拦截规则】-->
+<!--        <mvc:interceptor>-->
+<!--&lt;!&ndash;            首先对拦截规则进行配置，将所有/*进行拦截&ndash;&gt;-->
+
+<!--&lt;!&ndash;            http://localhost:8080/springMVC-demo01/a/b如果需要拦截这种该请求，通过/**进行拦截&ndash;&gt;-->
+<!--            <mvc:mapping path="/**"/>-->
+<!--&lt;!&ndash;            排除请求/进行放行&ndash;&gt;-->
+<!--            <mvc:exclude-mapping path="/"/>-->
+<!--&lt;!&ndash;            拦截规则为拦截所有的请求，放行对主页面的请求&ndash;&gt;-->
+<!--&lt;!&ndash;            指定对应的拦截器类&ndash;&gt;-->
+<!--            <ref bean="firstIntercepter"/>-->
+<!--        </mvc:interceptor>-->
+
+    </mvc:interceptors>
+
+
+<!--    配置异常处理-->
+<!--    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+<!--        <property name="exceptionMappings">-->
+<!--            <props>     &lt;!&ndash;通过properties类对象进行赋值，properties类继承自HashTable&ndash;&gt;-->
+<!--                <prop key="java.lang.ArithmeticException">error</prop>-->
+<!--            </props>-->
+<!--        </property>-->
+<!--&lt;!&ndash;        通过属性将数据放入请求域对象,这个name对应的值是reuqest域对象中确定的键，所以如果写错了会报错&ndash;&gt;-->
+<!--&lt;!&ndash;        设置将异常信息共享在请求域中的键ex&ndash;&gt;-->
+<!--        <property name="exceptionAttribute" value="ex"></property>-->
+<!--    </bean>-->
+
+
+    <!--    通过视图控制器进行请求地址与视图之间的映射关系-->
+    <mvc:view-controller path="/test_view" view-name="test_view"></mvc:view-controller>
+
+    <mvc:view-controller path="/file" view-name="file"></mvc:view-controller>
+
+    <mvc:view-controller path="/intercepter" view-name="intercepter"></mvc:view-controller>
+
+    <!--    开放对静态资源的访问-->
+    <mvc:default-servlet-handler/>
+<!--    如果使用了视图控制器进行路径映射，则其他所有的控制器映射将全部失效，所以需要开启对应的注解驱动-->
+    <mvc:annotation-driven />
+
+</beans>
